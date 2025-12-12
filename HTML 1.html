@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batik Interaktif - Terapkan Motif Batik ke Baju</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f9f5f0;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #8b4513 0%, #d2691e 100%);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .app-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .canvas-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .controls-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-title {
+            color: #8b4513;
+            border-bottom: 2px solid #e8d4b9;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #f5f5f5;
+        }
+
+        #tshirtCanvas {
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .pattern-item {
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+
+        .pattern-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .pattern-item.active {
+            border-color: #8b4513;
+        }
+
+        .pattern-item img {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .pattern-name {
+            text-align: center;
+            padding: 0.5rem;
+            background-color: #f0e6d6;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .control-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .control-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #5a3921;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .slider-container input[type="range"] {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: #e8d4b9;
+            outline: none;
+            
+        }
+
+        .slider-container input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #8b4513;
+            cursor: pointer;
+        }
+
+        .slider-value {
+            min-width: 30px;
+            text-align: center;
+            font-weight: 600;
+            color: #8b4513;
+        }
+
+        .color-options {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: transform 0.2s;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.active {
+            border-color: #333;
+            transform: scale(1.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: #8b4513;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background-color: #6b3410;
+        }
+
+        .btn-secondary {
+            background-color: #e8d4b9;
+            color: #5a3921;
+            flex: 1;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d8c4a9;
+        }
+
+        .info-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            margin-top: 2rem;
+        }
+
+        .info-section h3 {
+            color: #8b4513;
+            margin-bottom: 1rem;
+        }
+
+        .info-section p {
+            margin-bottom: 1rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: #5a3921;
+            color: white;
+            margin-top: 3rem;
+        }
+
+        .instructions {
+            background-color: #f0e6d6;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .pattern-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><i class="fas fa-tshirt"></i> Batik Interaktif</h1>
+        <p>Terapkan berbagai motif batik tradisional Indonesia ke template baju dengan mudah</p>
+    </header>
+
+    <div class="container">
+        <div class="app-container">
+            <section class="canvas-section">
+                <h2 class="section-title">Preview Baju Batik</h2>
+                <div class="canvas-wrapper">
+                    <canvas id="tshirtCanvas" width="600" height="400">
+                        Browser Anda tidak mendukung canvas. Silakan gunakan browser modern.
+                    </canvas>
+                </div>
+                <div class="instructions">
+                    <p><strong>Tips:</strong> Klik pada area baju untuk menempatkan motif batik. Gunakan kontrol di sebelah kanan untuk mengubah ukuran, rotasi, dan warna baju.</p>
+                </div>
+            </section>
+
+            <section class="controls-section">
+                <h2 class="section-title">Kontrol Desain</h2>
+                
+                <div class="control-group">
+                    <label class="control-label">Pilih Motif Batik:</label>
+                    <div class="pattern-grid" id="patternGrid">
+                        <!-- Motif batik akan dimuat via JavaScript -->
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">Ukuran Motif:</label>
+                    <div class="slider-container">
+                        <input type="range" id="patternSize" min="50" max="200" value="100">
+                        <span class="slider-value" id="sizeValue">100%</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">Rotasi Motif:</label>
+                    <div class="slider-container">
+                        <input type="range" id="patternRotation" min="0" max="360" value="0">
+                        <span class="slider-value" id="rotationValue">0°</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">Warna Baju:</label>
+                    <div class="color-options" id="colorOptions">
+                        <!-- Opsi warna akan dimuat via JavaScript -->
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" id="applyPattern">
+                        <i class="fas fa-paint-brush"></i> Terapkan Motif
+                    </button>
+                    <button class="btn btn-secondary" id="resetDesign">
+                        <i class="fas fa-redo"></i> Reset Desain
+                    </button>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">Unggah Motif Batik Anda:</label>
+                    <input type="file" id="uploadPattern" accept="image/*" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+            </section>
+        </div>
+
+        <section class="info-section">
+            <h3>Tentang Batik Indonesia</h3>
+            <p>Batik adalah warisan budaya Indonesia yang telah diakui UNESCO sebagai Warisan Kemanusiaan untuk Budaya Lisan dan Nonbendawi. Setiap motif batik memiliki makna filosofis yang dalam dan berbeda-beda sesuai daerah asalnya.</p>
+            <p>Dengan alat interaktif ini, Anda dapat mencoba berbagai motif batik tradisional pada desain baju virtual. Cobalah motif <strong>Parang</strong> dari Yogyakarta, <strong>Mega Mendung</strong> dari Cirebon, atau <strong>Kawung</strong> dari Jawa Tengah.</p>
+            <p>Anda juga dapat mengunggah motif batik Anda sendiri dan melihatnya pada template baju!</p>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Batik Interaktif - Dibuat dengan <i class="fas fa-heart" style="color: #ff6b6b;"></i> untuk melestarikan budaya Indonesia</p>
+        <p>Semua motif batik yang digunakan hanya untuk tujuan demonstrasi dan edukasi.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Canvas dan konteks
+            const canvas = document.getElementById('tshirtCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Data motif batik
+            const batikPatterns = [
+                { id: 1, name: "Parang", color: "#8b4513", pattern: "parang" },
+                { id: 2, name: "Mega Mendung", color: "#1e3a8a", pattern: "mega-mendung" },
+                { id: 3, name: "Kawung", color: "#000000", pattern: "kawung" },
+                { id: 4, name: "Sekar Jagad", color: "#065f46", pattern: "sekar-jagad" },
+                { id: 5, name: "Truntum", color: "#7c3aed", pattern: "truntum" },
+                { id: 6, name: "Tambal", color: "#b91c1c", pattern: "tambal" },
+                { id: 7, name: "Cuwiri", color: "#ca8a04", pattern: "cuwiri" },
+                { id: 8, name: "Sido Mukti", color: "#0f766e", pattern: "sido-mukti" }
+            ];
+            
+            // Warna baju
+            const shirtColors = [
+                { name: "Putih", value: "#ffffff" },
+                { name: "Krem", value: "#f5e6d3" },
+                { name: "Biru", value: "#3b82f6" },
+                { name: "Merah", value: "#dc2626" },
+                { name: "Hijau", value: "#10b981" },
+                { name: "Hitam", value: "#000000" }
+            ];
+            
+            // State aplikasi
+            let currentPattern = batikPatterns[0];
+            let currentShirtColor = shirtColors[0].value;
+            let patternSize = 100;
+            let patternRotation = 0;
+            let patternImage = null;
+            let isDrawing = false;
+            let lastPatternPosition = { x: canvas.width / 2, y: canvas.height / 2 };
+            
+            // Inisialisasi canvas
+            function initCanvas() {
+                drawShirt();
+                setupPatternGrid();
+                setupColorOptions();
+                setupEventListeners();
+                
+                // Buat gambar pattern default
+                createPatternImage(currentPattern);
+            }
+            
+            // Menggambar baju di canvas
+            function drawShirt() {
+                // Clear canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Warna baju
+                ctx.fillStyle = currentShirtColor;
+                
+                // Gambar bentuk baju (T-shirt sederhana)
+                // Tubuh baju
+                ctx.beginPath();
+                ctx.moveTo(150, 50);
+                ctx.lineTo(450, 50);
+                ctx.quadraticCurveTo(500, 100, 450, 150);
+                ctx.lineTo(450, 350);
+                ctx.quadraticCurveTo(450, 380, 420, 380);
+                ctx.lineTo(180, 380);
+                ctx.quadraticCurveTo(150, 380, 150, 350);
+                ctx.lineTo(150, 150);
+                ctx.quadraticCurveTo(100, 100, 150, 50);
+                ctx.fill();
+                
+                // Tambahkan sedikit bayangan untuk efek kedalaman
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                ctx.beginPath();
+                ctx.moveTo(150, 50);
+                ctx.lineTo(450, 50);
+                ctx.quadraticCurveTo(500, 100, 450, 150);
+                ctx.lineTo(450, 350);
+                ctx.quadraticCurveTo(450, 380, 420, 380);
+                ctx.lineTo(180, 380);
+                ctx.quadraticCurveTo(150, 380, 150, 350);
+                ctx.lineTo(150, 150);
+                ctx.quadraticCurveTo(100, 100, 150, 50);
+                ctx.fill();
+                
+                // Gambar leher baju
+                ctx.fillStyle = currentShirtColor;
+                ctx.beginPath();
+                ctx.ellipse(300, 70, 40, 25, 0, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Tambahkan bayangan untuk leher
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                ctx.beginPath();
+                ctx.ellipse(300, 72, 38, 23, 0, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Jika ada pattern, gambarkan di posisi terakhir
+                if (patternImage) {
+                    drawPattern(lastPatternPosition.x, lastPatternPosition.y);
+                }
+            }
+            
+            // Membuat gambar pattern berdasarkan data batik
+            function createPatternImage(pattern) {
+                // Buat canvas offscreen untuk pattern
+                const patternCanvas = document.createElement('canvas');
+                const patternCtx = patternCanvas.getContext('2d');
+                patternCanvas.width = 100;
+                patternCanvas.height = 100;
+                
+                // Warna dasar pattern
+                patternCtx.fillStyle = pattern.color;
+                patternCtx.fillRect(0, 0, patternCanvas.width, patternCanvas.height);
+                
+                // Gambar pola berdasarkan jenis pattern
+                patternCtx.fillStyle = "#f9f5f0"; // Warna motif
+                
+                switch(pattern.pattern) {
+                    case 'parang':
+                        // Pola parang (garis miring)
+                        for (let i = -10; i < patternCanvas.width; i += 15) {
+                            patternCtx.beginPath();
+                            patternCtx.moveTo(i, 0);
+                            patternCtx.lineTo(i + 20, patternCanvas.height);
+                            patternCtx.lineTo(i + 35, patternCanvas.height);
+                            patternCtx.lineTo(i + 15, 0);
+                            patternCtx.closePath();
+                            patternCtx.fill();
+                        }
+                        break;
+                        
+                    case 'mega-mendung':
+                        // Pola mega mendung (awan)
+                        for (let i = 0; i < 5; i++) {
+                            const x = 20 + i * 20;
+                            const y = 20 + (i % 2) * 30;
+                            patternCtx.beginPath();
+                            patternCtx.arc(x, y, 15, 0, Math.PI * 2);
+                            patternCtx.arc(x + 15, y + 10, 12, 0, Math.PI * 2);
+                            patternCtx.arc(x - 5, y + 20, 10, 0, Math.PI * 2);
+                            patternCtx.fill();
+                        }
+                        break;
+                        
+                    case 'kawung':
+                        // Pola kawung (bulatan teratur)
+                        for (let i = 0; i < 4; i++) {
+                            for (let j = 0; j < 4; j++) {
+                                const x = 15 + i * 25;
+                                const y = 15 + j * 25;
+                                patternCtx.beginPath();
+                                patternCtx.ellipse(x, y, 8, 10, 0, 0, Math.PI * 2);
+                                patternCtx.fill();
+                            }
+                        }
+                        break;
+                        
+                    case 'sekar-jagad':
+                        // Pola sekar jagad (bunga-bunga)
+                        for (let i = 0; i < 3; i++) {
+                            for (let j = 0; j < 3; j++) {
+                                const x = 20 + i * 30;
+                                const y = 20 + j * 30;
+                                
+                                // Gambar bunga sederhana
+                                patternCtx.beginPath();
+                                for (let k = 0; k < 8; k++) {
+                                    const angle = (k * Math.PI) / 4;
+                                    const petalX = x + 8 * Math.cos(angle);
+                                    const petalY = y + 8 * Math.sin(angle);
+                                    if (k === 0) {
+                                        patternCtx.moveTo(petalX, petalY);
+                                    } else {
+                                        patternCtx.lineTo(petalX, petalY);
+                                    }
+                                }
+                                patternCtx.closePath();
+                                patternCtx.fill();
+                                
+                                // Tengah bunga
+                                patternCtx.fillStyle = pattern.color;
+                                patternCtx.beginPath();
+                                patternCtx.arc(x, y, 4, 0, Math.PI * 2);
+                                patternCtx.fill();
+                                patternCtx.fillStyle = "#f9f5f0";
+                            }
+                        }
+                        break;
+                        
+                    default:
+                        // Pola default (kotak-kotak)
+                        for (let i = 0; i < patternCanvas.width; i += 20) {
+                            for (let j = 0; j < patternCanvas.height; j += 20) {
+                                if ((i + j) % 40 === 0) {
+                                    patternCtx.fillRect(i, j, 10, 10);
+                                }
+                            }
+                        }
+                }
+                
+                // Simpan gambar pattern
+                patternImage = new Image();
+                patternImage.src = patternCanvas.toDataURL();
+                patternImage.onload = function() {
+                    drawPattern(lastPatternPosition.x, lastPatternPosition.y);
+                };
+            }
+            
+            // Menggambar pattern pada posisi tertentu
+            function drawPattern(x, y) {
+                if (!patternImage) return;
+                
+                // Simpan konteks canvas
+                ctx.save();
+                
+                // Pindah ke posisi yang diinginkan
+                ctx.translate(x, y);
+                
+                // Rotasi pattern
+                ctx.rotate(patternRotation * Math.PI / 180);
+                
+                // Skala pattern
+                const scale = patternSize / 100;
+                
+                // Gambar pattern dengan ukuran yang disesuaikan
+                const width = patternImage.width * scale;
+                const height = patternImage.height * scale;
+                
+                // Gunakan globalCompositeOperation untuk menggambar hanya di area baju
+                ctx.globalCompositeOperation = 'source-atop';
+                ctx.drawImage(patternImage, -width/2, -height/2, width, height);
+                
+                // Kembalikan konteks
+                ctx.restore();
+            }
+            
+            // Setup grid pattern
+            function setupPatternGrid() {
+                const patternGrid = document.getElementById('patternGrid');
+                patternGrid.innerHTML = '';
+                
+                batikPatterns.forEach(pattern => {
+                    const patternItem = document.createElement('div');
+                    patternItem.className = 'pattern-item';
+                    patternItem.dataset.id = pattern.id;
+                    
+                    if (pattern.id === currentPattern.id) {
+                        patternItem.classList.add('active');
+                    }
+                    
+                    // Buat thumbnail pattern
+                    const thumbnailCanvas = document.createElement('canvas');
+                    const thumbnailCtx = thumbnailCanvas.getContext('2d');
+                    thumbnailCanvas.width = 100;
+                    thumbnailCanvas.height = 80;
+                    
+                    // Isi background
+                    thumbnailCtx.fillStyle = pattern.color;
+                    thumbnailCtx.fillRect(0, 0, thumbnailCanvas.width, thumbnailCanvas.height);
+                    
+                    // Gambar pola sederhana
+                    thumbnailCtx.fillStyle = "#f9f5f0";
+                    
+                    // Gambar pola kecil sebagai thumbnail
+                    for (let i = 0; i < 3; i++) {
+                        for (let j = 0; j < 2; j++) {
+                            const x = 15 + i * 35;
+                            const y = 20 + j * 30;
+                            
+                            thumbnailCtx.beginPath();
+                            thumbnailCtx.arc(x, y, 8, 0, Math.PI * 2);
+                            thumbnailCtx.fill();
+                        }
+                    }
+                    
+                    const img = document.createElement('img');
+                    img.src = thumbnailCanvas.toDataURL();
+                    img.alt = pattern.name;
+                    
+                    const patternName = document.createElement('div');
+                    patternName.className = 'pattern-name';
+                    patternName.textContent = pattern.name;
+                    
+                    patternItem.appendChild(img);
+                    patternItem.appendChild(patternName);
+                    
+                    patternItem.addEventListener('click', () => {
+                        document.querySelectorAll('.pattern-item').forEach(item => {
+                            item.classList.remove('active');
+                        });
+                        patternItem.classList.add('active');
+                        
+                        currentPattern = pattern;
+                        createPatternImage(pattern);
+                    });
+                    
+                    patternGrid.appendChild(patternItem);
+                });
+            }
+            
+            // Setup opsi warna
+            function setupColorOptions() {
+                const colorOptions = document.getElementById('colorOptions');
+                colorOptions.innerHTML = '';
+                
+                shirtColors.forEach((color, index) => {
+                    const colorOption = document.createElement('div');
+                    colorOption.className = 'color-option';
+                    colorOption.style.backgroundColor = color.value;
+                    colorOption.title = color.name;
+                    
+                    if (index === 0) {
+                        colorOption.classList.add('active');
+                    }
+                    
+                    colorOption.addEventListener('click', () => {
+                        document.querySelectorAll('.color-option').forEach(option => {
+                            option.classList.remove('active');
+                        });
+                        colorOption.classList.add('active');
+                        
+                        currentShirtColor = color.value;
+                        drawShirt();
+                    });
+                    
+                    colorOptions.appendChild(colorOption);
+                });
+            }
+            
+            // Setup event listeners
+            function setupEventListeners() {
+                // Slider ukuran pattern
+                const patternSizeSlider = document.getElementById('patternSize');
+                const sizeValue = document.getElementById('sizeValue');
+                
+                patternSizeSlider.addEventListener('input', function() {
+                    patternSize = this.value;
+                    sizeValue.textContent = `${patternSize}%`;
+                    
+                    if (patternImage) {
+                        drawShirt();
+                    }
+                });
+                
+                // Slider rotasi pattern
+                const patternRotationSlider = document.getElementById('patternRotation');
+                const rotationValue = document.getElementById('rotationValue');
+                
+                patternRotationSlider.addEventListener('input', function() {
+                    patternRotation = this.value;
+                    rotationValue.textContent = `${patternRotation}°`;
+                    
+                    if (patternImage) {
+                        drawShirt();
+                    }
+                });
+                
+                // Klik pada canvas untuk menempatkan pattern
+                canvas.addEventListener('click', function(event) {
+                    const rect = canvas.getBoundingClientRect();
+                    const x = event.clientX - rect.left;
+                    const y = event.clientY - rect.top;
+                    
+                    // Skala koordinat ke ukuran canvas sebenarnya
+                    const scaleX = canvas.width / rect.width;
+                    const scaleY = canvas.height / rect.height;
+                    
+                    lastPatternPosition = {
+                        x: x * scaleX,
+                        y: y * scaleY
+                    };
+                    
+                    drawShirt();
+                });
+                
+                // Tombol terapkan pattern
+                document.getElementById('applyPattern').addEventListener('click', function() {
+                    drawShirt();
+                    
+                    // Tampilkan pesan sukses
+                    showMessage('Motif batik berhasil diterapkan!', 'success');
+                });
+                
+                // Tombol reset
+                document.getElementById('resetDesign').addEventListener('click', function() {
+                    currentPattern = batikPatterns[0];
+                    currentShirtColor = shirtColors[0].value;
+                    patternSize = 100;
+                    patternRotation = 0;
+                    
+                    // Reset slider
+                    patternSizeSlider.value = 100;
+                    sizeValue.textContent = '100%';
+                    patternRotationSlider.value = 0;
+                    rotationValue.textContent = '0°';
+                    
+                    // Reset pilihan
+                    document.querySelectorAll('.pattern-item').forEach((item, index) => {
+                        item.classList.toggle('active', index === 0);
+                    });
+                    
+                    document.querySelectorAll('.color-option').forEach((item, index) => {
+                        item.classList.toggle('active', index === 0);
+                    });
+                    
+                    createPatternImage(currentPattern);
+                    drawShirt();
+                    
+                    showMessage('Desain berhasil direset!', 'info');
+                });
+                
+                // Upload gambar pattern
+                document.getElementById('uploadPattern').addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = new Image();
+                        img.onload = function() {
+                            patternImage = img;
+                            drawShirt();
+                            showMessage('Motif batik Anda berhasil diunggah!', 'success');
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+            
+            // Fungsi untuk menampilkan pesan
+            function showMessage(message, type) {
+                // Hapus pesan sebelumnya jika ada
+                const existingMessage = document.querySelector('.message');
+                if (existingMessage) {
+                    existingMessage.remove();
+                }
+                
+                // Buat elemen pesan
+                const messageEl = document.createElement('div');
+                messageEl.className = `message ${type}`;
+                messageEl.textContent = message;
+                messageEl.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 15px 20px;
+                    border-radius: 6px;
+                    color: white;
+                    font-weight: 600;
+                    z-index: 1000;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    animation: slideIn 0.3s ease;
+                `;
+                
+                if (type === 'success') {
+                    messageEl.style.backgroundColor = '#10b981';
+                } else if (type === 'info') {
+                    messageEl.style.backgroundColor = '#3b82f6';
+                }
+                
+                document.body.appendChild(messageEl);
+                
+                // Hapus pesan setelah 3 detik
+                setTimeout(() => {
+                    messageEl.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => {
+                        if (messageEl.parentNode) {
+                            messageEl.parentNode.removeChild(messageEl);
+                        }
+                    }, 300);
+                }, 3000);
+                
+                // Tambahkan animasi CSS
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            // Inisialisasi aplikasi
+            initCanvas();
+        });
+    </script>
+</body>
+</html>

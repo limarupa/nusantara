@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Batik Yogyakarta - Nusantara Budaya</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&family=Raleway:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* COPY SEMUA CSS DARI HALAMAN UTAMA - body, hero, container, dll */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            line-height: 1.6; 
+            color: #333;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%23f8f4e6' opacity='0.1' d='M0 0h100v100H0z'/%3E%3Cpath fill='%23d4a574' opacity='0.05' d='M20 20l10 10M30 40l15-5M60 15l-20 25M80 50l-30-10'/%3E%3C/svg%3E");
+            z-index: -1;
+        }
+        
+        /* Hero Detail */
+        .hero-detail {
+            height: 70vh;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+                        url('https://images.unsplash.com/photo-1606853738076-f9f2516b219b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') center/cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+        }
+        .hero-detail h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 8vw, 4.5rem);
+            margin-bottom: 1rem;
+        }
+        
+        /* Content Detail */
+        .detail-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            margin-top: 3rem;
+        }
+        .detail-img {
+            height: 500px;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)),
+                        url('jogja1.jpg') center/cover;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .detail-text h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #8b4513;
+            margin-bottom: 1.5rem;
+        }
+        .detail-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            color: #555;
+        }
+        
+        .back-btn {
+            background: linear-gradient(45deg, #d4a574, #b8955f);
+            color: white;
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+        }
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212,165,116,0.6);
+        }
+        
+        @media (max-width: 768px) {
+            .detail-grid { grid-template-columns: 1fr; }
+            .detail-img { height: 300px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Detail -->
+    <section class="hero-detail">
+        <h1>Batik Yogyakarta</h1>
+        <p>Warisan Budaya Dunia UNESCO</p>
+    </section>
+
+    <!-- Detail Content -->
+    <section class="detail-content">
+        <div class="detail-grid">
+            <div class="detail-img"></div>
+            <div class="detail-text">
+                <h2>Sejarah & Filosofi</h2>
+                <p>Batik Yogyakarta merupakan seni pewarnaan kain dengan teknik tradisional Jawa yang telah diakui UNESCO sebagai Warisan Budaya Dunia Takbenda. Motif-motifnya sarat filosofi kehidupan, seperti Kawung melambangkan kesempurnaan, Parang melambangkan keteguhan hati.</p>
+                <p>Proses pembuatannya menggunakan teknik canting dan pewarna alami menjadikan setiap kain batik sebagai karya seni unik yang tidak ada duanya.</p>
+                <h2>Ciri Khas</h2>
+                <p>- Motif geometris klasik<br>- Warna coklat soga alami<br>- Filosofi kehidupan Jawa<br>- Teknik canting tulis</p>
+                <a href="index.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Beranda
+                </a>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
+
+
+
+
